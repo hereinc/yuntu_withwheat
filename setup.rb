@@ -84,7 +84,7 @@ module Geckoboard; end
 
 class << Geckoboard
   def push id, data
-    RestClient.post "https://push.geckoboard.com/v1/send/#{id}", {
+    RestClient.get "https://push.geckoboard.com/v1/send/#{id}", {
       "api_key" => "f29b8d438283af1e366df92b2563f979",
       data: data
     }.to_json, :content_type => :json

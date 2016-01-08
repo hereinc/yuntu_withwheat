@@ -64,7 +64,7 @@ class Importer
   end
 
   URL_PARTIAL_MAP = {
-    'order_items' => 'Order'
+    'order_items' => 'Orders'
   }
 
   def import model_name, start_time, end_time = nil
@@ -90,7 +90,7 @@ class Importer
     base_url = "http://it.zaofans.com:8070/yun_wheat/datacube/get#{url_partual}"
     url = "#{base_url}?#{url_params.map{|k,v| "#{k}=#{v}"}.join('&')}"
     puts url
-    result = RestClient.post url, {}
+    result = RestClient.get url, {}
 
     json = JSON(result)
 
