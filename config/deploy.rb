@@ -18,7 +18,7 @@ set :rvm_ruby_version, 'ruby-2.2.2@yuntu_dashboard'
 # set :format, :pretty
 
 # Default value for :log_level is :debug
-set :log_level, :info
+# set :log_level, :info
 
 # Default value for :pty is false
 # set :pty, true
