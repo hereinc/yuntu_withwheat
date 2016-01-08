@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'https://ruby.taobao.org'
 gem 'activerecord', '4.2.5'
 gem 'activesupport', '4.2.5'
 gem 'mysql2'
