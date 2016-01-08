@@ -117,7 +117,7 @@ class Importer
 
     klass.transaction do
       print "delete old data..."
-      klass.where(TIME_MAPPING[klass].downcase => start_time..end_time).destroy_all
+      klass.where(TIME_MAPPING[klass].downcase => start_time..end_time).delete_all
       puts "done"
       puts "start save"
 
