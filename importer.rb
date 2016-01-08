@@ -107,7 +107,7 @@ class Importer
       puts json.inspect
     end
 
-    count = json["data"].length
+    count = (json["data"] || []).length
     puts "GET #{model_name} done! count is #{count}"
 
     if count == 0
