@@ -41,6 +41,14 @@ class Importer
     },
   }
 
+  # 获取数据的时间的字段
+  TIME_MAPPING = {
+    OrderItem => 'record_time',
+    Member => 'create_time',
+    MemberFeedback => 'create_time',
+    Product => 'create_time'
+  }
+
   def clean_model_attributes model_type, attrs
     mapping = MAPPING[model_type.to_sym]
 
@@ -109,7 +117,7 @@ class Importer
 
     klass.transaction do
       print "delete old data..."
-      klass.where(yt_datetime: start_time..end_time).destroy_all
+      klass.where(TIME_MAPPING[klass].downcase => start_time..end_time).destroy_all
       puts "done"
       puts "start save"
 
@@ -117,9 +125,7 @@ class Importer
       json["data"].each do |p|
         i += 1
         puts "process #{i}/#{count}" if i % 100 == 0
-        klass.create clean_model_attributes(model_name.to_sym, p).merge(
-          yt_datetime: start_time
-        )
+        klass.create clean_model_attributes(model_name.to_sym, p)
       end
       puts "done"
     end
