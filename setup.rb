@@ -78,7 +78,9 @@ end
 class Product < ActiveRecord::Base; end
 class Member < ActiveRecord::Base; end
 class MemberFeedback < ActiveRecord::Base; end
-class OrderItem < ActiveRecord::Base; end
+class OrderItem < ActiveRecord::Base
+  scope :paid, -> { where(order_status: ['PAID', 'RECEIVED', 'COMPLETE']) }
+end
 
 module Geckoboard; end
 

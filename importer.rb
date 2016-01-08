@@ -43,10 +43,10 @@ class Importer
 
   # 获取数据的时间的字段
   TIME_MAPPING = {
-    OrderItem => 'record_time',
-    Member => 'create_time',
-    MemberFeedback => 'create_time',
-    Product => 'create_time'
+    'OrderItem' => 'record_time',
+    'Member' => 'create_time',
+    'MemberFeedback' => 'create_time',
+    'Product' => 'create_time'
   }
 
   def clean_model_attributes model_type, attrs
@@ -117,7 +117,7 @@ class Importer
 
     klass.transaction do
       print "delete old data..."
-      klass.where(TIME_MAPPING[klass].downcase => start_time..end_time).delete_all
+      klass.where(TIME_MAPPING[klass.name.to_s].downcase => start_time..end_time).delete_all
       puts "done"
       puts "start save"
 

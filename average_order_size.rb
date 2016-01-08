@@ -5,7 +5,7 @@ module AverageOrderSize
     def sync
       start_time = (Time.now-6.days).beginning_of_day.to_datetime
       end_time = Time.now.end_of_day.to_datetime
-      result = OrderItem.where(order_status: ['PAID', 'RECEIVED']).where('pay_time >= ? AND pay_time <= ?', start_time, end_time).group('DATE(pay_time)').select('sum(pay_price) as daily_gmv, count(distinct(order_id)) as daily_orders_count')
+      result = OrderItem.paid.where('pay_time >= ? AND pay_time <= ?', start_time, end_time).group('DATE(pay_time)').select('sum(pay_price) as daily_gmv, count(distinct(order_id)) as daily_orders_count')
 
       daily_gmv = result.sum(:pay_price)
       daily_orders_count = result.distinct.count(:order_id)

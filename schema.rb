@@ -38,7 +38,6 @@ ActiveRecord::Schema.define(version: 1) do
     t.datetime "yt_datetime"
   end
 
-  add_index "members", ["user_id"], name: "index_members_on_user_id", unique: true, using: :btree
   add_index "members", ["yt_datetime"], name: "index_members_on_yt_datetime", using: :btree
 
   create_table "order_items", force: :cascade do |t|
@@ -75,7 +74,6 @@ ActiveRecord::Schema.define(version: 1) do
     t.datetime "yt_datetime"
   end
 
-  add_index "products", ["product_id"], name: "index_products_on_product_id", unique: true, using: :btree
   add_index "products", ["yt_datetime"], name: "index_products_on_yt_datetime", using: :btree
 
 end

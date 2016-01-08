@@ -45,7 +45,7 @@ module NewUsers
       end
 
       # no cache
-      sql = OrderItem.where(order_status: ['PAID', 'RECEIVED']).where('pay_time >= ? AND pay_time <= ?', time.beginning_of_day, time.end_of_day)
+      sql = OrderItem.paid.where('pay_time >= ? AND pay_time <= ?', time.beginning_of_day, time.end_of_day)
       # puts time.strftime('%Y-%m-%d')
       # puts sql.to_sql
       date_orders_users = sql.pluck('distinct(user_id)').map(&:to_s)
@@ -143,7 +143,7 @@ class Cohort
 
       month_new_users_count += new_users.count
 
-      # retain_range_orders_users = OrderItem.where(order_status: ['PAID', 'RECEIVED']).where('pay_time >= ? AND pay_time <= ?', day.beginning_of_day+retain_param[0].days, time.end_of_day+retain_param[1].days).pluck('distinct(user_id)')
+      # retain_range_orders_users = OrderItem.paid.where('pay_time >= ? AND pay_time <= ?', day.beginning_of_day+retain_param[0].days, time.end_of_day+retain_param[1].days).pluck('distinct(user_id)')
 
       retain_range_orders_users = (retain_param[0]...retain_param[1]).map do |offset|
         _k = NewUsers.active_purchase_key(day + offset.days)

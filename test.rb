@@ -1,9 +1,9 @@
 ENV['RUBY_ENV'] = 'test'
 require 'minitest/autorun'
 
-require File.expand_path('../../withwheat/setup', __FILE__)
-require File.expand_path('../../withwheat/importer', __FILE__)
-require File.expand_path('../../withwheat/cohort', __FILE__)
+require File.expand_path('../setup', __FILE__)
+require File.expand_path('../importer', __FILE__)
+require File.expand_path('../cohort', __FILE__)
 
 class CartItemTest < Minitest::Test
   YEAR = 2008
