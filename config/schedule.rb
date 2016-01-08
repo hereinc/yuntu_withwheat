@@ -5,14 +5,12 @@
 
 # Example:
 #
-# set :output, "/path/to/my/cron_log.log"
-#
+set :output, "/var/www/yuntu_withwheat/shared/log/cron_log.log"
 
-# job_type :r,    "cd :path && :environment_variable=:environment bundle exec rake :task --silent :output"
-# ~/.rvm/bin/rvm ruby-2.2.2@yuntu_dashboard do ruby
+job_type :ruby,  "cd :path && ~/.rvm/bin/rvm ruby-2.2.2@yuntu_withwheat do undle exec ruby :task :output"
+
 every 1.hours do
-  runner 'Dir.pwd'
-  command 'ls'
+  ruby 'sync.rb'
 end
 #
 # every 4.days do

@@ -9,7 +9,7 @@ set :repo_url, 'git@github.com:hereinc/yuntu_withwheat.git'
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/var/www/yuntu_withwheat'
-set :rvm_ruby_version, 'ruby-2.2.2@yuntu_dashboard'
+set :rvm_ruby_version, 'ruby-2.2.2@yuntu_withwheat'
 
 # Default value for :scm is :git
 # set :scm, :git
