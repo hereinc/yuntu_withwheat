@@ -25,6 +25,7 @@ if ENV['RUBY_ENV'] == 'test'
     :host     => "127.0.0.1",
     :username => "root",
     :password => "",
+    reconnect: true,
     :port     => 3306
   }
   database = 'ym_test'
@@ -43,6 +44,7 @@ elsif ENV['RUBY_ENV'] == 'development'
     :host     => "127.0.0.1",
     :username => "root",
     :password => "",
+    reconnect: true,
     :port     => 3306
   }
   database = 'ym'
@@ -66,6 +68,7 @@ elsif ENV['RUBY_ENV'] == 'production'
     :host     => "127.0.0.1",
     :username => "withwheat",
     :password => "withwheat",
+    reconnect: true,
     :port     => port
   }
   database = 'withwheat'
