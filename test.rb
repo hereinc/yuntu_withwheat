@@ -10,15 +10,25 @@ class CartItemTest < Minitest::Test
 
   def setup
     $redis.keys.each { |x| $redis.del x }
-    create_order_item 8,  1,  [1]
-    create_order_item 8,  2,  [2, 3, 1]
-    create_order_item 8,  4,  [5]
-    create_order_item 8,  9,  [1, 5]
-    create_order_item 8,  20, [2]
-    create_order_item 9,  8,  [3, 6]
-    create_order_item 10, 18, [6]
-    create_order_item 10, 20, [3]
+    OrderItem.delete_all
+    create_order_item      8,  1,  [1      ]
+    @i = create_order_item(8,  1,  [100    ], 'UNPAY')[0]
+    create_order_item      8,  2,  [2, 3, 1]
+    create_order_item      8,  4,  [5      ]
+    create_order_item      8,  9,  [1, 5   ]
+    create_order_item      8,  20, [2      ]
+    create_order_item      9,  8,  [3, 6   ]
+    create_order_item      10, 18, [6      ]
+    create_order_item      10, 20, [3      ]
     NewUsers.compute(new_time(YEAR, 8, 1), new_time(YEAR, 10, 20))
+  end
+
+  def test_recored_change
+    assert_equal [0, 1, 2], NewUsers.new_users_count(new_time(YEAR, 7, 31), new_time(YEAR, 8, 2))
+    @i.update(:order_status => 'RECEIVED')
+    NewUsers.compute(new_time(YEAR, 8, 1), new_time(YEAR, 8, 2))
+
+    assert_equal [0, 2, 2], NewUsers.new_users_count(new_time(YEAR, 7, 31), new_time(YEAR, 8, 2))
   end
 
   def test_new_user_count
@@ -38,10 +48,10 @@ class CartItemTest < Minitest::Test
     Time.zone.local *p
   end
 
-  def create_order_item month, day, user_ids
-    user_ids.each do |user_id|
+  def create_order_item month, day, user_ids, status = 'RECEIVED'
+    user_ids.map do |user_id|
       OrderItem.create(
-        order_status: 'RECEIVED',
+        order_status: status,
         user_id: user_id,
         pay_time: new_time(YEAR, month, day, 0, 0, 0)
       )

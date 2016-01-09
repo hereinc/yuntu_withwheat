@@ -24,25 +24,23 @@ module NewUsers
       end_time = end_time.end_of_day.to_datetime
 
       (start_time..end_time).step(1).map do |time|
-        on_date(time)
+        on_date(time, true)
       end
     end
 
-    def on_date(time)
-      puts "Compute on_date #{time}"
+    # check_new = true
+    # 如果某些记录更新为付款，那么更新缓存
 
+    def on_date(time, check_new = false)
       key = new_purchases_key(time)
       new_users = $redis.smembers(key)
 
-      # cache empty
-      if new_users == NO_DATA_ARRAY
-        return []
+      if !check_new
+        puts "NewUser on_date #{time}: use cache"
+        return Set.new($redis.smembers(key)).delete(NO_DATA_ARRAY.first)
       end
 
-      # get cache
-      if !new_users.empty?
-        return new_users
-      end
+      puts "NewUser on_date #{time}: compute"
 
       # no cache
       sql = OrderItem.paid.where('pay_time >= ? AND pay_time <= ?', time.beginning_of_day, time.end_of_day)
@@ -51,22 +49,28 @@ module NewUsers
       date_orders_users = sql.pluck('distinct(user_id)').map(&:to_s)
       # require 'pry'
       # binding.pry
+      # binding.pry if time.strftime('%Y-%m-%d') == '2008-08-01'
 
       all_users = $redis.smembers('all-users')
+      old_new_users = new_users
+
       new_users = date_orders_users - all_users
 
-      if time.to_date < Time.now.to_date
-        $redis.sadd(active_purchase_key(time), date_orders_users) if !date_orders_users.empty?
-
-        if !new_users.empty?
-          $redis.sadd('all-users', new_users)
-          $redis.sadd(key, new_users)
-        else
-          $redis.sadd(key, NO_DATA_ARRAY)
-        end
+      if time.to_date >= Time.now.to_date
+        return new_users
       end
 
-      new_users
+      $redis.sadd(active_purchase_key(time), date_orders_users) if !date_orders_users.empty?
+
+      if !new_users.empty?
+        $redis.sadd('all-users', new_users)
+        $redis.sadd(key, new_users)
+        $redis.srem(key, NO_DATA_ARRAY.first)
+      elsif old_new_users.empty?
+        $redis.sadd(key, NO_DATA_ARRAY)
+      end
+
+      Set.new($redis.smembers(key)).delete(NO_DATA_ARRAY.first)
     end
 
     def new_users_count(start_time, end_time = Time.now, frequency = 'day')
@@ -74,7 +78,12 @@ module NewUsers
 
       case frequency
       when 'day'
-        result = compute(start_time, end_time).map(&:count)
+        start_time = start_time.beginning_of_day.to_datetime
+        end_time = end_time.end_of_day.to_datetime
+
+        result = (start_time..end_time).step(1).map do |time|
+          on_date(time)
+        end.map(&:count)
       when 'month'
         start_time = start_time.beginning_of_month.to_datetime
         end_time = end_time.end_of_month.to_datetime
