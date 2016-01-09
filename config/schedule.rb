@@ -7,7 +7,7 @@
 #
 set :output, "/var/www/yuntu_withwheat/shared/log/cron_log.log"
 
-job_type :ruby,  "cd :path && ~/.rvm/bin/rvm ruby-2.2.2@yuntu_withwheat do bundle exec ruby :task :output"
+job_type :ruby,  "cd :path && RUBY_ENV=production ~/.rvm/bin/rvm ruby-2.2.2@yuntu_withwheat do bundle exec ruby :task :output"
 
 every 1.hours do
   ruby 'sync.rb'
