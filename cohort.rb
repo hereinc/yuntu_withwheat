@@ -36,11 +36,11 @@ module NewUsers
       new_users = $redis.smembers(key)
 
       if !check_new
-        puts "NewUser on_date #{time}: use cache"
+        # puts "NewUser on_date #{time}: use cache"
         return Set.new($redis.smembers(key)).delete(NO_DATA_ARRAY.first)
       end
 
-      puts "NewUser on_date #{time}: compute"
+      # puts "NewUser on_date #{time}: compute"
 
       # no cache
       sql = OrderItem.paid.where('pay_time >= ? AND pay_time <= ?', time.beginning_of_day, time.end_of_day)
